@@ -116,6 +116,11 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 		position, _ = file.Seek(0, io.SeekEnd)
 	} else if err == io.EOF && seekBack {
 		position, _ = file.Seek(0, io.SeekStart)
+
+		// no EOF err on SeekLine(0,0)
+		if lines == 0 {
+			err = nil
+		}
 	}
 
 	return position, err
