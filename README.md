@@ -3,16 +3,29 @@
 [![Build Status](https://travis-ci.org/StoicPerlman/fls.svg?branch=master)](https://travis-ci.org/StoicPerlman/fls)
 
 ## Usage
+### API
+
+https://godoc.org/github.com/StoicPerlman/fls
+
 ### Example
 
 ```go
 import "github.com/stoicperlman/fls"
 
+// use fls.LineFile(file *os.File) *File
+// for files opened from os package
 f, _ := os.OpenFile("test.log", os.O_CREATE|os.O_RDONLY, 0600)
 defer f.Close()
 file := fls.LineFile(f)
 
-_, err = file.SeekLine(-10, io.SeekEnd)
+pos, err := file.SeekLine(-10, io.SeekEnd)
+
+// use io/os file wrappers to open without io/os package
+// fls.OpenFile(name string, flag int, perm os.FileMode) (*File, error)
+f, err := fls.OpenFile("test.log", fls.O_CREATE|fls.O_WRONLY, 0600)
+defer f.Close()
+
+pos, err := file.SeekLine(-10, fls.SeekEnd)
 ```
 
 ### Detail
