@@ -91,10 +91,10 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 			// buffer is 0 to unread position
 			if position+int64(offset) <= 0 {
 				buf = make([]byte, leftPosition)
-				position, err = file.Seek(0, io.SeekStart)
+				position, err = file.Seek(0, SeekStart)
 				leftPosition = 0
 			} else {
-				position, err = file.Seek(offset, io.SeekCurrent)
+				position, err = file.Seek(offset, SeekCurrent)
 				leftPosition = leftPosition - BufferLength
 			}
 		}
@@ -106,7 +106,7 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 		if err != nil {
 			break
 		} else if seekBack && leftPosition == 0 {
-			err = io.EOF
+			err = EOF
 		}
 
 		for i := 0; i < bufLen; i++ {
@@ -122,17 +122,17 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 
 			if matchCount == lines {
 				if seekBack {
-					return file.Seek(int64(i)*-1, io.SeekCurrent)
+					return file.Seek(int64(i)*-1, SeekCurrent)
 				}
-				return file.Seek(int64(bufLen*-1+i+1), io.SeekCurrent)
+				return file.Seek(int64(bufLen*-1+i+1), SeekCurrent)
 			}
 		}
 	}
 
-	if err == io.EOF && !seekBack {
-		position, _ = file.Seek(0, io.SeekEnd)
-	} else if err == io.EOF && seekBack {
-		position, _ = file.Seek(0, io.SeekStart)
+	if err == EOF && !seekBack {
+		position, _ = file.Seek(0, SeekEnd)
+	} else if err == EOF && seekBack {
+		position, _ = file.Seek(0, SeekStart)
 
 		// no EOF err on SeekLine(0,0)
 		if lines == 0 {
