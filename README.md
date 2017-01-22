@@ -1,5 +1,7 @@
 # File Line Seeker
 
+[![Build Status](https://travis-ci.org/StoicPerlman/fls.svg?branch=master)](https://travis-ci.org/StoicPerlman/fls)
+
 ## Usage
 ### Example
 
