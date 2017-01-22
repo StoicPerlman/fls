@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -201,6 +202,90 @@ func TestSeekLineCurrent(t *testing.T) {
 	myT.Ok(line, 0, err, true)
 }
 
+// os file wrapper tests
+func TestCreate(t *testing.T) {
+	myT := &T{t}
+	file, err := Create("test-create.log")
+	defer file.Close()
+	myT.CheckError(err)
+
+	fi, err := file.Stat()
+	myT.CheckError(err)
+
+	if fi.Name() != "test-create.log" {
+		t.Error("\nUnable to get file stats: ", fi)
+	}
+}
+
+func TestNewFile(t *testing.T) {
+	myT := &T{t}
+	file := NewFile(uintptr(syscall.Stdin), "/dev/stdin")
+	defer file.Close()
+
+	fi, err := file.Stat()
+	myT.CheckError(err)
+
+	if fi.Name() != "stdin" {
+		t.Error("\nUnable to get file stats: ", fi)
+	}
+}
+
+func TestOpen(t *testing.T) {
+	myT := &T{t}
+
+	f, err := os.Create("test-open.log")
+	myT.CheckError(err)
+	f.Close()
+
+	file, err := Open("test-open.log")
+	myT.CheckError(err)
+	defer file.Close()
+
+	fi, err := file.Stat()
+	myT.CheckError(err)
+
+	if fi.Name() != "test-open.log" {
+		t.Error("\nUnable to get file stats: ", fi)
+	}
+}
+
+func TestOpenFile(t *testing.T) {
+	myT := &T{t}
+
+	file, err := OpenFile("test-open-file.log", os.O_CREATE|os.O_WRONLY, 0600)
+	myT.CheckError(err)
+	defer file.Close()
+
+	fi, err := file.Stat()
+	myT.CheckError(err)
+
+	if fi.Name() != "test-open-file.log" {
+		t.Error("\nUnable to get file stats: ", fi)
+	}
+}
+
+func TestPipe(t *testing.T) {
+	myT := &T{t}
+
+	file1, file2, err := Pipe()
+	myT.CheckError(err)
+	defer file1.Close()
+	defer file2.Close()
+
+	fi1, err := file1.Stat()
+	myT.CheckError(err)
+	fi2, err := file2.Stat()
+	myT.CheckError(err)
+
+	if fi1.Name() != "|0" {
+		t.Error("\nUnable to get file stats: ", fi1)
+	}
+
+	if fi2.Name() != "|1" {
+		t.Error("\nUnable to get file stats: ", fi2)
+	}
+}
+
 // Test helper functions
 func GetLine(file *File) int {
 	pos, _ := file.Seek(0, io.SeekCurrent)
@@ -236,5 +321,11 @@ func (t *T) Ok(got int, expected int, err error, expectEOF bool) {
 		t.Error("\nExpected to hit EOF")
 	} else if !expectEOF && err == io.EOF {
 		t.Error("\nDid not expect to hit EOF")
+	}
+}
+
+func (t *T) CheckError(err error) {
+	if err != nil {
+		t.Error("\nUnexpexted error: ", err)
 	}
 }
