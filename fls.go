@@ -10,22 +10,18 @@ type File struct {
 	*os.File
 }
 
-type FileMode struct {
-	*os.FileMode
-}
-
-const BufferLength = 32 * 1024
-
 const (
-	SeekStart int = io.SeekStart     // seek relative to the origin of the file
+	BufferLength = 32 * 1024
+
+	SeekStart   int = io.SeekStart   // seek relative to the origin of the file
 	SeekCurrent int = io.SeekCurrent // seek relative to the current offset
-	SeekEnd int = io.SeekEnd         // seek relative to the end
+	SeekEnd     int = io.SeekEnd     // seek relative to the end
 
 	O_RDONLY int = os.O_RDONLY // open the file read-only.
 	O_WRONLY int = os.O_WRONLY // open the file write-only.
 	O_RDWR   int = os.O_RDWR   // open the file read-write.
 	O_APPEND int = os.O_APPEND // append data to the file when writing.
-	O_CREATE int = os.O_CREAT  // create a new file if none exists.
+	O_CREATE int = os.O_CREATE // create a new file if none exists.
 	O_EXCL   int = os.O_EXCL   // used with O_CREATE, file must not exist
 	O_SYNC   int = os.O_SYNC   // open for synchronous I/O.
 	O_TRUNC  int = os.O_TRUNC  // if possible, truncate file when opened.
@@ -154,7 +150,7 @@ func Open(name string) (*File, error) {
 	return file, err
 }
 
-func OpenFile(name string, flag int, perm FileMode) (*File, error) {
+func OpenFile(name string, flag int, perm os.FileMode) (*File, error) {
 	f, err := os.OpenFile(name, flag, perm)
 	file := LineFile(f)
 	return file, err
