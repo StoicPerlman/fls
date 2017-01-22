@@ -12,9 +12,11 @@ type File struct {
 
 const BufferLength = 32 * 1024
 
-const SeekStart = io.SeekStart
-const SeekCurrent = io.SeekCurrent
-const SeekEnd = io.SeekEnd
+const (
+	SeekStart int = io.SeekStart     // seek relative to the origin of the file
+	SeekCurrent int = io.SeekCurrent // seek relative to the current offset
+	SeekEnd int = io.SeekEnd         // seek relative to the end
+)
 
 var EOF = io.EOF
 
