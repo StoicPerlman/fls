@@ -134,6 +134,72 @@ func TestSeekLineEnd(t *testing.T) {
 	myT.Ok(line, 0, err, true)
 }
 
+func TestSeekLineCurrent(t *testing.T) {
+	myT := &T{t}
+
+	f, err := os.OpenFile("test.log", os.O_CREATE|os.O_RDONLY, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+	file := LineFile(f)
+
+	_, err = file.SeekLine(-1, io.SeekCurrent)
+	line := GetLine(file)
+	myT.Ok(line, 0, err, true)
+
+	_, err = file.SeekLine(0, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 0, err, false)
+
+	_, err = file.SeekLine(1, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 1, err, false)
+
+	_, err = file.SeekLine(100, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 101, err, false)
+
+	// bigger than buffer
+	_, err = file.SeekLine(10000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 10101, err, false)
+
+	_, err = file.SeekLine(50000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 60101, err, false)
+
+	_, err = file.SeekLine(50000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 99999, err, true)
+
+	_, err = file.SeekLine(0, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 99999, err, false)
+
+	_, err = file.SeekLine(-1, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 99998, err, false)
+
+	_, err = file.SeekLine(-100, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 99898, err, false)
+
+	// bigger than buffer
+	_, err = file.SeekLine(-10000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 89898, err, false)
+
+	_, err = file.SeekLine(-50000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 39898, err, false)
+
+	_, err = file.SeekLine(-50000, io.SeekCurrent)
+	line = GetLine(file)
+	myT.Ok(line, 0, err, true)
+}
+
 // Test helper functions
 func GetLine(file *File) int {
 	pos, _ := file.Seek(0, io.SeekCurrent)
