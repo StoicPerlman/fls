@@ -13,6 +13,7 @@ type T struct {
 	*testing.T
 }
 
+// known EOF position for test.log
 const TestFileEOFPos = 588889
 
 func init() {
