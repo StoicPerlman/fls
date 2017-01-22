@@ -125,3 +125,35 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 
 	return position, err
 }
+
+// os file wrappers
+func Create(name string) (*File, error) {
+	f, err := os.Create(name)
+	file := LineFile(f)
+	return file, err
+}
+
+func NewFile(fd uintptr, name string) *File {
+	f := os.NewFile(fd, name)
+	file := LineFile(f)
+	return file
+}
+
+func Open(name string) (*File, error) {
+	f, err := os.Open(name)
+	file := LineFile(f)
+	return file, err
+}
+
+func OpenFile(name string, flag int, perm os.FileMode) (*File, error) {
+	f, err := os.OpenFile(name, flag, perm)
+	file := LineFile(f)
+	return file, err
+}
+
+func Pipe() (r *File, w *File, err error) {
+	f1, f2, err := os.Pipe()
+	file1 := LineFile(f1)
+	file2 := LineFile(f2)
+	return file1, file2, err
+}
