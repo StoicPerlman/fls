@@ -12,6 +12,12 @@ type File struct {
 
 const BufferLength = 32 * 1024
 
+const SeekStart = io.SeekStart
+const SeekCurrent = io.SeekCurrent
+const SeekEnd = io.SeekEnd
+
+var EOF = io.EOF
+
 func LineFile(file *os.File) *File {
 	return &File{file}
 }
