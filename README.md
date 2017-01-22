@@ -20,12 +20,12 @@ file := fls.LineFile(f)
 
 pos, err := file.SeekLine(-10, io.SeekEnd)
 
-// use io/os file wrappers to open without io/os package
+// use os file wrappers to open without os package
 // fls.OpenFile(name string, flag int, perm os.FileMode) (*File, error)
-f, err := fls.OpenFile("test.log", fls.O_CREATE|fls.O_WRONLY, 0600)
+f, err := fls.OpenFile("test.log", os.O_CREATE|os.O_WRONLY, 0600)
 defer f.Close()
 
-pos, err := file.SeekLine(-10, fls.SeekEnd)
+pos, err := file.SeekLine(-10, io.SeekEnd)
 ```
 
 ### Detail

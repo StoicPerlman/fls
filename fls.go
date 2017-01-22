@@ -10,24 +10,7 @@ type File struct {
 	*os.File
 }
 
-const (
-	BufferLength = 32 * 1024
-
-	SeekStart   int = io.SeekStart   // seek relative to the origin of the file
-	SeekCurrent int = io.SeekCurrent // seek relative to the current offset
-	SeekEnd     int = io.SeekEnd     // seek relative to the end
-
-	O_RDONLY int = os.O_RDONLY // open the file read-only.
-	O_WRONLY int = os.O_WRONLY // open the file write-only.
-	O_RDWR   int = os.O_RDWR   // open the file read-write.
-	O_APPEND int = os.O_APPEND // append data to the file when writing.
-	O_CREATE int = os.O_CREATE // create a new file if none exists.
-	O_EXCL   int = os.O_EXCL   // used with O_CREATE, file must not exist
-	O_SYNC   int = os.O_SYNC   // open for synchronous I/O.
-	O_TRUNC  int = os.O_TRUNC  // if possible, truncate file when opened.
-)
-
-var EOF = io.EOF
+const BufferLength = 32 * 1024
 
 func LineFile(file *os.File) *File {
 	return &File{file}
@@ -79,10 +62,10 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 			// buffer is 0 to unread position
 			if position+int64(offset) <= 0 {
 				buf = make([]byte, leftPosition)
-				position, err = file.Seek(0, SeekStart)
+				position, err = file.Seek(0, io.SeekStart)
 				leftPosition = 0
 			} else {
-				position, err = file.Seek(offset, SeekCurrent)
+				position, err = file.Seek(offset, io.SeekCurrent)
 				leftPosition = leftPosition - BufferLength
 			}
 		}
@@ -94,7 +77,7 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 		if err != nil {
 			break
 		} else if seekBack && leftPosition == 0 {
-			err = EOF
+			err = io.EOF
 		}
 
 		for i := 0; i < bufLen; i++ {
@@ -110,19 +93,19 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 
 			if matchCount == lines {
 				if seekBack {
-					return file.Seek(int64(i)*-1, SeekCurrent)
+					return file.Seek(int64(i)*-1, io.SeekCurrent)
 				}
-				return file.Seek(int64(bufLen*-1+i+1), SeekCurrent)
+				return file.Seek(int64(bufLen*-1+i+1), io.SeekCurrent)
 			}
 		}
 	}
 
-	if err == EOF && !seekBack {
-		position, _ = file.Seek(0, SeekEnd)
-	} else if err == EOF && seekBack {
-		position, _ = file.Seek(0, SeekStart)
+	if err == io.EOF && !seekBack {
+		position, _ = file.Seek(0, io.SeekEnd)
+	} else if err == io.EOF && seekBack {
+		position, _ = file.Seek(0, io.SeekStart)
 
-		// no EOF err on SeekLine(0,0)
+		// no io.EOF err on SeekLine(0,0)
 		if lines == 0 {
 			err = nil
 		}
