@@ -88,7 +88,7 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 		bufLen, err = file.Read(buf)
 		if err != nil {
 			break
-		} else if leftPosition == 0 {
+		} else if seekBack && leftPosition == 0 {
 			err = io.EOF
 		}
 
