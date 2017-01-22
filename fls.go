@@ -10,6 +10,10 @@ type File struct {
 	*os.File
 }
 
+type FileMode struct {
+	*os.FileMode
+}
+
 const BufferLength = 32 * 1024
 
 const (
@@ -162,7 +166,7 @@ func Open(name string) (*File, error) {
 	return file, err
 }
 
-func OpenFile(name string, flag int, perm os.FileMode) (*File, error) {
+func OpenFile(name string, flag int, perm FileMode) (*File, error) {
 	f, err := os.OpenFile(name, flag, perm)
 	file := LineFile(f)
 	return file, err
