@@ -12,7 +12,7 @@ type File struct {
 
 const BufferLength = 32 * 1024
 
-func LineFile(file *os.File) (*File) {
+func LineFile(file *os.File) *File {
 	return &File{file}
 }
 
