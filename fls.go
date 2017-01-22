@@ -37,22 +37,10 @@ func LineFile(file *os.File) *File {
 	return &File{file}
 }
 
-// seeks through file by line
-// positive lines will move forward in file
-// 0 lines will move to begining of line
-// negative lines will move backwards in file
-
-// -1 lines, 0 whence will return EOF
-// 0 lines, 0 whence will return begining line 1
-// 1 lines, 0 whence will return begining line 2
-
-// -1 lines, 1 whence will return begining of previous line
-// 0 lines, 1 whence will return begining of current line
-// 1 lines, 1 whence will return begining of next line
-
-// -1 lines, 2 whence will return begining of second to last line
-// 0 lines, 2 whence will return begining of last line
-// 1 lines, 2 whence will return EOF
+// seeks through file by line.
+// positive lines will move forward in file.
+// 0 lines will move to begining of line.
+// negative lines will move backwards in file.
 func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 
 	// return error on bad whence
