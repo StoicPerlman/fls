@@ -18,28 +18,17 @@ type T struct {
 const TestFileEOFPos = 588889
 
 func init() {
-	f, err := os.OpenFile("test.log", os.O_CREATE|os.O_WRONLY, 0600)
-	if err != nil {
-		panic(err)
-	}
-
-	defer f.Close()
-
-	for i := 0; i <= 99999; i++ {
-
-		lineNum := strconv.Itoa(i)
-
-		if i > 0 {
-			lineNum = "\n" + lineNum
-		}
-
-		if _, err = f.WriteString(lineNum); err != nil {
-			panic(err)
-		}
-	}
+	CreateTestFile(99999, "test.log")
+	CreateTestFile(100, "100.log")
+	CreateTestFile(1000, "1000.log")
+	CreateTestFile(10000, "10000.log")
+	CreateTestFile(100000, "100000.log")
+	CreateTestFile(1000000, "1000000.log")
+	CreateTestFile(10000000, "10000000.log")
 }
 
 func TestSeekLineStart(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	f, err := os.OpenFile("test.log", os.O_CREATE|os.O_RDONLY, 0600)
@@ -286,6 +275,79 @@ func TestPipe(t *testing.T) {
 	}
 }
 
+// benchmarks
+func BenchmarkSeekLine100(b *testing.B) {
+	c := 100
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
+func BenchmarkSeekLine1000(b *testing.B) {
+	c := 1000
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
+func BenchmarkSeekLine10000(b *testing.B) {
+	c := 10000
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
+func BenchmarkSeekLine100000(b *testing.B) {
+	c := 100000
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
+func BenchmarkSeekLine1000000(b *testing.B) {
+	c := 1000000
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
+func BenchmarkSeekLine10000000(b *testing.B) {
+	c := 10000000
+	file, _ := Open(strconv.Itoa(c) + ".log")
+	defer file.Close()
+
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		file.SeekLine(int64(c), io.SeekStart)
+    }
+}
+
 // Test helper functions
 func GetLine(file *File) int {
 	pos, _ := file.Seek(0, io.SeekCurrent)
@@ -308,6 +370,27 @@ func GetLine(file *File) int {
 
 	line, _ := strconv.Atoi(sp[0])
 	return line
+}
+
+func CreateTestFile(lines int, name string) {
+	file, err := os.OpenFile(name, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
+	defer file.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 0; i <= lines; i++ {
+
+		lineNum := strconv.Itoa(i)
+
+		if i > 0 {
+			lineNum = "\n" + lineNum
+		}
+
+		if _, err = file.WriteString(lineNum); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func (t *T) Ok(got int, expected int, err error, expectEOF bool) {
