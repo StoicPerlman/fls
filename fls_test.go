@@ -74,6 +74,7 @@ func TestSeekLineStart(t *testing.T) {
 }
 
 func TestSeekLineEnd(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	f, err := os.OpenFile("test.log", os.O_CREATE|os.O_RDONLY, 0600)
@@ -126,6 +127,7 @@ func TestSeekLineEnd(t *testing.T) {
 }
 
 func TestSeekLineCurrent(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	f, err := os.OpenFile("test.log", os.O_CREATE|os.O_RDONLY, 0600)
@@ -193,6 +195,7 @@ func TestSeekLineCurrent(t *testing.T) {
 
 // os file wrapper tests
 func TestCreate(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 	file, err := Create("test-create.log")
 	defer file.Close()
@@ -207,6 +210,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestNewFile(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 	file := NewFile(uintptr(syscall.Stdin), "/dev/stdin")
 	defer file.Close()
@@ -220,6 +224,7 @@ func TestNewFile(t *testing.T) {
 }
 
 func TestOpen(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	f, err := os.Create("test-open.log")
@@ -239,6 +244,7 @@ func TestOpen(t *testing.T) {
 }
 
 func TestOpenFile(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	file, err := OpenFile("test-open-file.log", os.O_CREATE|os.O_WRONLY, 0600)
@@ -254,6 +260,7 @@ func TestOpenFile(t *testing.T) {
 }
 
 func TestPipe(t *testing.T) {
+	t.Parallel()
 	myT := &T{t}
 
 	file1, file2, err := Pipe()
