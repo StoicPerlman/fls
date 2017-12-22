@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/StoicPerlman/fls.svg?branch=master)](https://travis-ci.org/StoicPerlman/fls)
 
+Seek to any line in a file without reading the whole file into memory. Works similar to os.File.Seek.
+
 ## Usage
 ### API
 
