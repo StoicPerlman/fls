@@ -25,7 +25,7 @@ pos, err := file.SeekLine(-10, io.SeekEnd)
 f, err := fls.OpenFile("test.log", os.O_CREATE|os.O_WRONLY, 0600)
 defer f.Close()
 
-pos, err := file.SeekLine(-10, io.SeekEnd)
+pos, err := f.SeekLine(-10, io.SeekEnd)
 ```
 
 ### Detail
