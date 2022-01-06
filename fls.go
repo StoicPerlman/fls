@@ -37,7 +37,7 @@ func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 	matchCount := int64(0)
 
 	// seekBack ignores first match
-	// allows 0 to go to begining of current line
+	// allows 0 to go to beginning of current line
 	if seekBack {
 		matchCount = -1
 	}
