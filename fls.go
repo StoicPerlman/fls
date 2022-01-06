@@ -23,7 +23,7 @@ func LineFile(file *os.File) *File {
 func (file *File) SeekLine(lines int64, whence int) (int64, error) {
 
 	// return error on bad whence
-	if whence < io.SeekStart || whence > io.SeekEnd {{
+	if whence < io.SeekStart || whence > io.SeekEnd {
 		return file.Seek(0, whence)
 	}
 
